@@ -1,0 +1,19 @@
+{
+  "name": "Heliosphere",
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "Default GraphQL Endpoint": {
+        "url": "http://127.0.0.1:42011/api/graphql",
+        "headers": {
+          "user-agent": "JS GraphQL"
+        },
+        "introspect": false
+      },
+      "Production": {
+        "url": "https://heliosphere.app/api/api/graphql",
+        "introspect": false
+      }
+    }
+  }
+}
