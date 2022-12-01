@@ -1,0 +1,19 @@
+query GetFiles($id: Int!) {
+    getVersion(id: $id) {
+        neededFiles(download: false, full: true) {
+            baseUri
+            files
+        }
+
+        groups {
+            name
+            options {
+                name
+                description
+                gamePaths
+                imagePath
+            }
+            selectionType
+        }
+    }
+}

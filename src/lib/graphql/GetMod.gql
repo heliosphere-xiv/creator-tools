@@ -1,0 +1,30 @@
+query GetMod($id: UUID!) {
+    package(id: $id) {
+        id
+        name
+        tagline
+        description
+        downloads
+
+        user {
+            id
+            username
+        }
+
+        images {
+            id
+            displayOrder
+        }
+
+        versions(last: 100) {
+            nodes {
+                id
+                version
+                changelog
+                downloadSize
+                installSize
+                downloads
+            }
+        }
+    }
+}
