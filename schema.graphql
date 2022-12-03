@@ -16,6 +16,7 @@ type FullUser {
   additionalStorage: Int!
   email: String!
   emailVerified: Boolean!
+  hashes: [String!]!
   id: Int!
   storageTier: StorageTier!
   tasks: [Task!]!

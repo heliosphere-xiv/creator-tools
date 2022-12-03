@@ -1,5 +1,6 @@
-import base32Encode from "base32-encode";
-import base32Decode from "base32-decode";
+import base32Encode from 'base32-encode';
+import base32Decode from 'base32-decode';
+import { open } from '@tauri-apps/api/dialog';
 
 export function uuidToBase32(input: string): string {
     const replaced = input.replaceAll('-', '');
@@ -47,4 +48,17 @@ export function formatBytes(bytes: number, decimals = 2) {
     const formatted = new Intl.NumberFormat().format(amt);
 
     return `${formatted} ${sizes[i]}`;
+}
+
+export async function chooseTtmp(): Promise<string | null> {
+    return await open({
+        multiple: false,
+        title: 'Choose TTMP',
+        filters: [
+            {
+                name: 'TexTools Mod Packs',
+                extensions: ['ttmp2', 'ttmp'],
+            },
+        ],
+    }) as string | null;
 }

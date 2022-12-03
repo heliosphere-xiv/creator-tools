@@ -1,0 +1,14 @@
+query GetMe {
+    me {
+        # for ui
+        username
+
+        # for storage calculations
+        storageTier {
+            totalSize
+        }
+        usedStorage
+        additionalStorage
+        hashes
+    }
+}

@@ -14,12 +14,15 @@
     "dependencies": {
         "@tauri-apps/api": "^1.1.0",
         "base32-decode": "^1.0.0",
-        "base32-encode": "^2.0.0"
+        "base32-encode": "^2.0.0",
+        "lodash-es": "^4.17.21",
+        "svelte-local-storage-store": "^0.3.1"
     },
     "devDependencies": {
         "@sveltejs/adapter-static": "next",
-        "@sveltejs/kit": "next",
+        "@sveltejs/kit": "^1.0.0-next.571",
         "@tauri-apps/cli": "^1.1.0",
+        "@types/lodash-es": "^4.17.6",
         "graphql": "^15.8.0",
         "houdini": "^0.17.14",
         "houdini-svelte": "^0.17.14",
