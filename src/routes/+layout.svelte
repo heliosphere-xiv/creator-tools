@@ -1,5 +1,15 @@
 <script lang='ts'>
     import { beforeNavigate } from '$app/navigation';
+    import { CachePolicy, GQL_GetMe } from '$houdini';
+    import { authToken } from '$lib/stores';
+
+    authToken.subscribe(async () => {
+        await GQL_GetMe.fetch({
+            policy: CachePolicy.NetworkOnly,
+        });
+    });
+
+    $: me = $GQL_GetMe.data?.me;
 
     let details: HTMLDetailsElement;
 
@@ -14,6 +24,11 @@
         <li><strong><a class='index' href='/'>Heliosphere</a></strong></li>
     </ul>
     <ul>
+        {#if !me}
+            <li><a href='/login'>Log in</a></li>
+        {:else}
+            <li>{me.username}</li>
+        {/if}
         <li>
             <details bind:this={details} role='list' dir='rtl'>
                 <summary aria-haspopup='listbox' role='link'>

@@ -12,8 +12,13 @@
   },
   "tauri": {
     "allowlist": {
-      "all": true,
+      "all": false,
+      "dialog": {
+        "open": true,
+        "save": true
+      },
       "http": {
+        "request": true,
         "scope": [
           "https://heliosphere.app/api/api/graphql"
         ]
@@ -34,7 +39,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "app.heliosphere.creator-tools",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -64,7 +69,8 @@
         "height": 1400,
         "resizable": true,
         "title": "Heliosphere Creator Tools",
-        "width": 1200
+        "width": 1200,
+        "visible": false
       }
     ]
   }

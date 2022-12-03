@@ -179,10 +179,10 @@
     tiny-glob "^0.2.9"
     undici "5.12.0"
 
-"@sveltejs/kit@next":
-  version "1.0.0-next.570"
-  resolved "https://registry.yarnpkg.com/@sveltejs/kit/-/kit-1.0.0-next.570.tgz#23d5f47136fa7e9255ad93e1867b7e0d8dac3303"
-  integrity sha512-7CUoYidoWlKdTGxL/5RsPPkgGTb36TwFBnhSZmspHFeiIST5qQEXyzqicFk8+4M5qQhxvOZ0NuP8uy7Pc+xf/Q==
+"@sveltejs/kit@^1.0.0-next.571":
+  version "1.0.0-next.571"
+  resolved "https://registry.yarnpkg.com/@sveltejs/kit/-/kit-1.0.0-next.571.tgz#7cd6b1e9376d822fdf49bca15425d7f02499cbd0"
+  integrity sha512-J+J0UXBiAh569l4ZxKm6eIZJS4lbcP8MgF9fU+DbVplCJ8nqo9wUmirUHZkJoBoB0FUlZSgA0R7N471MnUNNBw==
   dependencies:
     "@sveltejs/vite-plugin-svelte" "^1.3.1"
     "@types/cookie" "^0.5.1"
@@ -198,9 +198,9 @@
     undici "5.13.0"
 
 "@sveltejs/vite-plugin-svelte@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@sveltejs/vite-plugin-svelte/-/vite-plugin-svelte-1.3.1.tgz#1b0a109d49ec42981ea2e1d7bdb712fbc96354bb"
-  integrity sha512-2Uu2sDdIR+XQWF7QWOVSF2jR9EU6Ciw1yWfYnfLYj8HIgnNxkh/8g22Fw2pBUI8QNyW/KxtqJUWBI+8ypamSrQ==
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@sveltejs/vite-plugin-svelte/-/vite-plugin-svelte-1.4.0.tgz#412a735de489ca731d0c780c2b410f45dd95b392"
+  integrity sha512-6QupI/jemMfK+yI2pMtJcu5iO2gtgTfcBdGwMZZt+lgbFELhszbDl6Qjh000HgAV8+XUA+8EY8DusOFk8WhOIg==
   dependencies:
     debug "^4.3.4"
     deepmerge "^4.2.2"
@@ -305,6 +305,18 @@
   integrity sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==
   dependencies:
     "@types/node" "*"
+
+"@types/lodash-es@^4.17.6":
+  version "4.17.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash-es/-/lodash-es-4.17.6.tgz#c2ed4c8320ffa6f11b43eb89e9eaeec65966a0a0"
+  integrity sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.191"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.191.tgz#09511e7f7cba275acd8b419ddac8da9a6a79e2fa"
+  integrity sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==
 
 "@types/micromatch@^4.0.2":
   version "4.0.2"
@@ -1404,6 +1416,11 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+
 lodash@^4.17.11, lodash@^4.17.15, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
@@ -2378,6 +2395,11 @@ svelte-hmr@^0.15.1:
   version "0.15.1"
   resolved "https://registry.yarnpkg.com/svelte-hmr/-/svelte-hmr-0.15.1.tgz#d11d878a0bbb12ec1cba030f580cd2049f4ec86b"
   integrity sha512-BiKB4RZ8YSwRKCNVdNxK/GfY+r4Kjgp9jCLEy0DuqAKfmQtpL38cQK3afdpjw4sqSs4PLi3jIPJIFp259NkZtA==
+
+svelte-local-storage-store@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/svelte-local-storage-store/-/svelte-local-storage-store-0.3.1.tgz#0abb0a119d4a37625394bab0ed2c0fe958e81a31"
+  integrity sha512-pG+jjBY8oZWQ1XRnVkLIuPPbPqBWVtj0IINQBjkZSpJ+OqMs285efd+oiGdk4vBDnqomw81SForn+KH1j3HguA==
 
 svelte-preprocess@^4.0.0, svelte-preprocess@^4.10.6:
   version "4.10.7"
