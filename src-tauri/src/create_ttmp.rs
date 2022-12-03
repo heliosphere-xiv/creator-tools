@@ -36,6 +36,26 @@ impl TtmpProgress {
     }
 }
 
+lazy_static::lazy_static! {
+    static ref DAT_FILES: HashMap<&'static str, &'static str> = maplit::hashmap! {
+        "common" => "000000",
+        "bgcommon" => "010000",
+        "bg" => "020000",
+        "cut" => "030000",
+        "chara" => "040000",
+        "shader" => "050000",
+        "ui" => "060000",
+        "sound" => "070000",
+        "vfx" => "080000",
+        "ui_script" => "090000",
+        "exd" => "0a0000",
+        "game_script" => "0b0000",
+        "music" => "0c0000",
+        "sqpack_test" => "120000",
+        "debug" => "130000",
+    };
+}
+
 pub async fn create_ttmp_inner<R: Runtime>(window: Window<R>, path: &str, info: ModInfo, groups: Vec<Group>, needed_files: NeededFiles) -> anyhow::Result<()> {
     TtmpProgress::CreatingManifest.emit(&window)?;
 
@@ -49,6 +69,13 @@ pub async fn create_ttmp_inner<R: Runtime>(window: Window<R>, path: &str, info: 
 
     for uses in needed_files.files.values() {
         for use_ in uses {
+            let dat_file = use_.2.split('/')
+                .next()
+                .and_then(|first| DAT_FILES.get(first))
+                .copied()
+                .unwrap_or("040000")
+                .to_string();
+
             let simple = SimpleMod {
                 name: "".into(),
                 full_path: use_.2.clone(),
@@ -56,7 +83,7 @@ pub async fn create_ttmp_inner<R: Runtime>(window: Window<R>, path: &str, info: 
                 mod_size: 0, // this will be set by the encoder
                 mod_pack_entry: None,
                 category: "Mod file".into(),
-                dat_file: "040000".into(),
+                dat_file,
                 is_default: false,
             };
 
