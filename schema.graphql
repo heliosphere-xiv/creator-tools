@@ -17,7 +17,7 @@ type FullUser {
   email: String!
   emailVerified: Boolean!
   hashes: [String!]!
-  id: Int!
+  id: UUID!
   storageTier: StorageTier!
   tasks: [Task!]!
   tokenId: Int!
@@ -52,7 +52,7 @@ scalar JSON
 scalar JSONObject
 
 type LoginResponse {
-  id: Int!
+  id: UUID!
   token: String!
   username: String!
 }
@@ -109,7 +109,7 @@ type Package {
   updatedAt: DateTime!
   usageExempt: Boolean!
   user: User!
-  userId: Int!
+  userId: UUID!
   versions(after: String, before: String, first: Int, last: Int): VersionConnection!
 }
 
@@ -166,12 +166,11 @@ type QueryRoot {
   searchVersions(info: SearchRequest!, page: Int): SearchResult!
   storageTiers: [StorageTier!]!
   task(id: UUID!): Task
-  user(id: Int!): User
-  users(after: String, before: String, first: Int, last: Int): UserConnection!
+  user(id: UUID!): User
 }
 
 type RegisterResponse {
-  id: Int!
+  id: UUID!
   token: String!
   username: String!
 }
@@ -283,29 +282,9 @@ input UpdateVersionInput {
 }
 
 type User {
-  id: Int!
+  id: UUID!
   packages(after: String, before: String, first: Int, last: Int): PackageConnection!
   username: String!
-}
-
-type UserConnection {
-  """A list of edges."""
-  edges: [UserEdge!]!
-
-  """A list of nodes."""
-  nodes: [User!]!
-
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-}
-
-"""An edge in a connection."""
-type UserEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
-
-  """The item at the end of the edge"""
-  node: User!
 }
 
 type Version {
