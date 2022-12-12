@@ -16,8 +16,11 @@ query GetMod($id: UUID!) {
             displayOrder
         }
 
-        versions(last: 100) {
-            nodes {
+        variants {
+            id
+            name
+
+            versions {
                 id
                 version
                 changelog

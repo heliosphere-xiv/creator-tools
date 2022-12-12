@@ -19,21 +19,21 @@
         "svelte-local-storage-store": "^0.3.1"
     },
     "devDependencies": {
-        "@sveltejs/adapter-static": "next",
+        "@sveltejs/adapter-static": "^1.0.0-next.49",
         "@sveltejs/kit": "^1.0.0-next.571",
         "@tauri-apps/cli": "^1.1.0",
         "@types/lodash-es": "^4.17.6",
-        "graphql": "^15.8.0",
+        "graphql": "^16",
         "houdini": "^0.17.14",
         "houdini-svelte": "^0.17.14",
-        "node-sass": "^8.0.0",
         "prettier": "^2.8.0",
         "prettier-plugin-svelte": "^2.8.1",
+        "sass": "^1.56.2",
         "svelte": "^3.49.0",
         "svelte-check": "^2.7.1",
-        "svelte-preprocess": "^4.10.6",
+        "svelte-preprocess": "^5.0.0",
         "tslib": "^2.3.1",
         "typescript": "^4.8.4",
-        "vite": "^3.1.0"
+        "vite": "^4.0.1"
     }
 }

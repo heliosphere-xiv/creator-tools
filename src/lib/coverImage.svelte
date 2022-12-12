@@ -36,6 +36,7 @@
     filter: blur(10px);
     pointer-events: none;
     background-size: cover;
+    background-position: center;
 
     .nsfw & {
       filter: blur(50px);
