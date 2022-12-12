@@ -27,9 +27,16 @@ type FullUser {
 }
 
 type Group {
+  description: String
   name: String!
   options: [OptionItem!]!
+  priority: Int!
   selectionType: SelectionType!
+}
+
+type GroupManipulations {
+  name: String
+  options: [OptionManipulations!]!
 }
 
 type Image {
@@ -59,11 +66,13 @@ type LoginResponse {
 
 type Mutation {
   createPackage(package: PackageInput!): Package!
+  createVariant(input: VariantInput!): Variant!
   deleteAllTokens(except: Int): Int!
   deleteImages(ids: [Int!]!): Int!
   deletePackage(id: UUID!): Int!
   deleteToken(id: Int!): Int!
   deleteUser: Int!
+  deleteVariant(id: Int!): Int!
   deleteVersion(id: Int!): Int!
   login(password: String!, username: String!): LoginResponse!
   logout: Int!
@@ -71,19 +80,27 @@ type Mutation {
   reorderImages(ordering: JSONObject!): Int!
   updatePackage(id: UUID!, update: UpdatePackageInput!): Int!
   updateUser(update: UpdateUserInput!): Int!
+  updateVariant(id: Int!, input: UpdateVariantInput!): Int!
   updateVersion(id: Int!, input: UpdateVersionInput!): Int!
 }
 
 type NeededFiles {
   baseUri: String!
   files: FileList!
+  manipulations: [GroupManipulations!]!
 }
 
 type OptionItem {
   description: String
   gamePaths: [String!]!
   imagePath: String
+  manipulations: [JSON!]!
   name: String!
+}
+
+type OptionManipulations {
+  manipulations: [JSON!]!
+  name: String
 }
 
 scalar Options
@@ -110,7 +127,7 @@ type Package {
   usageExempt: Boolean!
   user: User!
   userId: UUID!
-  versions(after: String, before: String, first: Int, last: Int): VersionConnection!
+  variants: [Variant!]!
 }
 
 type PackageConnection {
@@ -167,6 +184,7 @@ type QueryRoot {
   storageTiers: [StorageTier!]!
   task(id: UUID!): Task
   user(id: UUID!): User
+  variant(id: Int!): Variant
 }
 
 type RegisterResponse {
@@ -276,8 +294,13 @@ input UpdateUserInput {
   username: String
 }
 
+input UpdateVariantInput {
+  name: String = null
+}
+
 input UpdateVersionInput {
   changelog: JSON! = "{\"kind\":\"ignore\"}"
+  variant: Int = null
   version: String = null
 }
 
@@ -285,6 +308,19 @@ type User {
   id: UUID!
   packages(after: String, before: String, first: Int, last: Int): PackageConnection!
   username: String!
+}
+
+type Variant {
+  id: Int!
+  name: String!
+  package: Package!
+  packageId: UUID!
+  versions(limit: Int): [Version!]!
+}
+
+input VariantInput {
+  name: String!
+  packageId: UUID!
 }
 
 type Version {
@@ -299,28 +335,8 @@ type Version {
   installSize: Int!
   installerImages: InstallerImages!
   neededFiles(download: Boolean, full: Boolean, options: Options): NeededFiles!
-  package: Package!
-  packageId: UUID!
   updatedAt: DateTime!
+  variant: Variant!
+  variantId: Int!
   version: String!
-}
-
-type VersionConnection {
-  """A list of edges."""
-  edges: [VersionEdge!]!
-
-  """A list of nodes."""
-  nodes: [Version!]!
-
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-}
-
-"""An edge in a connection."""
-type VersionEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
-
-  """The item at the end of the edge"""
-  node: Version!
 }

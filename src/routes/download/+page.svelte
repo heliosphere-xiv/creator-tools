@@ -43,17 +43,23 @@
     }
 
     type Package = GetMod$result['package'];
-    type Version = Package['versions']['nodes'][number];
+    type Variant = Package['variants'][number];
+    type Version = Variant['versions'][number];
 
     let rawUrl = '';
+    let variant: Variant | null;
+    let variants: Variant[] = [];
+    let variantIdx = -1;
     let version: Version | null;
-    let versions: Version[] = [];
     let versionIdx = -1;
     let mod: Promise<Package | null>;
     let processing = false;
     let progress: TtmpProgress | null = null;
 
-    $: version = versionIdx < 0 || versionIdx >= versions.length ? null : versions[versionIdx];
+    $: variant = variantIdx < 0 || variantIdx > variants.length ? null : variants[variantIdx];
+    $: version = variant === null || versionIdx < 0 || versionIdx >= variant.versions.length
+        ? null
+        : variant.versions[versionIdx];
 
     async function getInfo(u: string): Promise<Package | null> {
         if (u === '') {
@@ -76,7 +82,7 @@
         });
 
         const pkg = resp.data?.package;
-        if (pkg === null) {
+        if (pkg === null || pkg === undefined) {
             // TODO: errors
             return null;
         }
@@ -84,13 +90,18 @@
         return pkg;
     }
 
-    $: mod = getInfo(rawUrl?.trim() || '').then(info => {
-        versionIdx = info === null ? -1 : info.versions.nodes.length - 1;
-        versions = info?.versions?.nodes || [];
-        progress = null;
+    async function updateInfo() {
+        mod = getInfo(rawUrl?.trim() || '').then(info => {
+            variantIdx = info === null ? -1 : 0;
+            variants = info?.variants || [];
 
-        return info;
-    });
+            versionIdx = info === null ? -1 : info.variants[variantIdx].versions.length - 1;
+
+            progress = null;
+
+            return Promise.resolve(info);
+        });
+    }
 
     async function submit() {
         processing = true;
@@ -113,7 +124,13 @@
                 id: version.id,
             },
         });
+        if (resp.data === null) {
+            return;
+        }
         const ver = resp.data.getVersion;
+        if (ver === null) {
+            return;
+        }
 
         const path = await save({
             title: 'Save TTMP',
@@ -161,6 +178,7 @@
         <input
             type='text'
             bind:value={rawUrl}
+            on:input={updateInfo}
             required
             placeholder='https://heliosphere.app/mod/xxxxxxxxxxxxxxxxxxxxxxxxxx'
         />
@@ -191,11 +209,27 @@
                     </div>
                 </details>
 
-                <select bind:value={versionIdx}>
-                    {#each [...mod.versions.nodes].reverse() as version, idx (version.id)}
-                        <option value={mod.versions.nodes.length - idx - 1}>{version.version}</option>
-                    {/each}
-                </select>
+                {#if variants.length > 1}
+                    <label>
+                        Variant
+                        <select bind:value={variantIdx}>
+                            {#each mod.variants as variant, idx (variant.id)}
+                                <option value={idx}>{variant.name}</option>
+                            {/each}
+                        </select>
+                    </label>
+                {/if}
+
+                {#if variant}
+                    <label>
+                        Version
+                        <select bind:value={versionIdx}>
+                            {#each [...variant.versions].reverse() as version, idx (version.id)}
+                                <option value={variant.versions.length - idx - 1}>{version.version}</option>
+                            {/each}
+                        </select>
+                    </label>
+                {/if}
 
                 {#if version}
                     <table>
