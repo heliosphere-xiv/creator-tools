@@ -62,20 +62,24 @@
     }
 </script>
 
-<h1>Deduplicate a TTMP</h1>
+<article>
+    <header>
+        <h1>Deduplicate a TTMP</h1>
+    </header>
 
-<p>
-    By default, TexTools ends up duplicating files, i.e. including exactly the same file more than
-    once, inside of TTMPs. This can lead to massive size bloat. This tool will remove the duplicate
-    files for you and create a new TTMP in the same folder.
-</p>
+    <p>
+        By default, TexTools ends up duplicating files, i.e. including exactly the same file more than
+        once, inside of TTMPs. This can lead to massive size bloat. This tool will remove the duplicate
+        files for you and create a new TTMP in the same folder.
+    </p>
 
-<p>
-    <small>
-        Note that Heliosphere does this for you automatically after upload, but if you want to
-        reduce your TTMP's file size prior to uploading it, you can do so here.
-    </small>
-</p>
+    <p>
+        <small>
+            Note that Heliosphere does this for you automatically after upload, but if you want to
+            reduce your TTMP's file size prior to uploading it, you can do so here.
+        </small>
+    </p>
+</article>
 
 {#if progress}
     {progressName(progress)}

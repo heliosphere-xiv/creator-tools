@@ -155,3 +155,7 @@ h1 {
 h1 + article {
     margin-top: var(--spacing);
 }
+
+nav + article {
+    margin-top: 0;
+}

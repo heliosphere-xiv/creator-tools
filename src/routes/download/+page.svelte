@@ -163,9 +163,11 @@
     }
 </script>
 
-<h1>Download as TTMP</h1>
-
 <article>
+    <header>
+        <h1>Download as TTMP</h1>
+    </header>
+
     <p>
         Heliosphere mods do not use TTMPs internally, so this tool will
         construct a TTMP from a Heliosphere mod if you need one.

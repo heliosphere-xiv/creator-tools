@@ -46,11 +46,15 @@
     }
 </script>
 
-<h1>Log in</h1>
+<article>
+    <header>
+        <h1>Log in</h1>
+    </header>
 
-<p>
-    Certain features of this app require you to be logged in. You can do so here!
-</p>
+    <p>
+        Certain features of this app require you to be logged in. You can do so here!
+    </p>
+</article>
 
 {#if error}
     <p>An error occurred. Please try again.</p>

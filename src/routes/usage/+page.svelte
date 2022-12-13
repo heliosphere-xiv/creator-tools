@@ -103,14 +103,18 @@
     }
 </script>
 
-<h1>TTMP usage calcuation</h1>
+<article>
+    <header>
+        <h1>TTMP usage calcuation</h1>
+    </header>
 
-<p>
-    This tool will allow you to gauge how much of your account storage a TTMP will use after upload.
-    {#if !me}
-        To ensure accurate results, be sure to log in.
-    {/if}
-</p>
+    <p>
+        This tool will allow you to gauge how much of your account storage a TTMP will use after upload.
+        {#if !me}
+            To ensure accurate results, be sure to log in.
+        {/if}
+    </p>
+</article>
 
 {#if me}
     Current usage:<br />
