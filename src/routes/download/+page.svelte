@@ -134,7 +134,7 @@
 
         const path = await save({
             title: 'Save TTMP',
-            defaultPath: `${pkg.name}.ttmp2`,
+            defaultPath: `${pkg.name} (${variant.name}).ttmp2`,
             filters: [{ name: 'TexTools Mod Packs', extensions: ['ttmp2', 'ttmp'] }],
         });
 
