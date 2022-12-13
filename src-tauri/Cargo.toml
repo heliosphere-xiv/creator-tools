@@ -1,6 +1,6 @@
 [package]
 name = "heliosphere-creator-tools"
-version = "1.1.0"
+version = "1.1.1"
 authors = ["Anna Clemens <git@annaclemens.io>"]
 license = ""
 repository = ""
