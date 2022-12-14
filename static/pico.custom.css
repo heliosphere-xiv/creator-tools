@@ -55,6 +55,7 @@
 html {
     min-width: 100vw;
     min-height: 100vh;
+    overflow-x: hidden;
     margin: 0;
 }
 
