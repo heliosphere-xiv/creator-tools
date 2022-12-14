@@ -66,10 +66,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 1400,
+        "height": 850,
         "resizable": true,
         "title": "Heliosphere Creator Tools",
-        "width": 1200,
+        "width": 770,
         "visible": false
       }
     ]

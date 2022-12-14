@@ -74,7 +74,7 @@
         try {
             size = await invoke('calculate_usage', {
                 path: chosen,
-                hashes: me.hashes,
+                hashes: me?.hashes || [],
             }) as CalculatedUsage;
 
             const pairs = toPairs(size.hashes);
