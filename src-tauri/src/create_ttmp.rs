@@ -121,17 +121,8 @@ pub async fn create_ttmp_inner<R: Runtime>(window: Window<R>, path: &str, info: 
                     }
                 });
 
-            println!("use_: {:?}", use_);
-            println!("page: {:#?}", page);
-
             let page_group = &mut page.mod_groups[0];
-            if let Some(opt) = page_group.option_list.iter_mut().find(|opt| {
-                println!("opt.name: {:?}", opt.name);
-                println!("option: {:?}", option);
-                println!("equal?: {}", opt.name == *option);
-                opt.name == *option
-            }) {
-                println!("pushing");
+            if let Some(opt) = page_group.option_list.iter_mut().find(|opt| opt.name == *option) {
                 opt.mods_jsons.push(simple);
             }
         }
@@ -164,7 +155,7 @@ pub async fn create_ttmp_inner<R: Runtime>(window: Window<R>, path: &str, info: 
     let mut staging = Some(TokioFile::from_std(tempfile::tempfile().context("could not create temp file")?));
     for (i, (hash, uses)) in needed_files.files.into_iter().enumerate() {
         // truncate temp file
-        staging.as_mut().unwrap().seek(SeekFrom::Start(0)).await?;
+        staging.as_mut().unwrap().rewind().await?;
         staging.as_ref().unwrap().set_len(0).await?;
 
         let mut url = needed_files.base_uri.clone();
