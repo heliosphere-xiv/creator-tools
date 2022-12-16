@@ -1,5 +1,5 @@
 use std::collections::{HashMap, HashSet};
-use std::io::{Seek, SeekFrom};
+use std::io::Seek;
 use std::path::Path;
 use std::sync::Arc;
 
@@ -73,7 +73,7 @@ pub async fn calculate_usage_inner<R: Runtime>(window: Window<R>, state: TauriSt
     } else {
         let window = window.clone();
 
-        file.seek(SeekFrom::Start(0)).await?;
+        file.rewind().await?;
         let file = file.into_std().await;
 
         tokio::task::spawn_blocking(move || {
@@ -90,18 +90,27 @@ pub async fn calculate_usage_inner<R: Runtime>(window: Window<R>, state: TauriSt
                 total: files_len,
             }.emit(&window)?;
 
+            let mut last_offset = None;
+
             let mut staging = tempfile::tempfile()?;
             let mut compressed = tempfile::tempfile()?;
             for (i, file) in files.into_iter().enumerate() {
-                staging.seek(SeekFrom::Start(0))?;
+                // handle deduped ttmps
+                if Some(file.file.mod_offset) == last_offset {
+                    continue;
+                }
+
+                last_offset = Some(file.file.mod_offset);
+
+                staging.rewind()?;
                 staging.set_len(0)?;
 
-                compressed.seek(SeekFrom::Start(0))?;
+                compressed.rewind()?;
                 compressed.set_len(0)?;
 
                 // extract file to disk (seek-able)
                 TtmpExtractor::extract_one_into(&file, &mut mpd, &mut staging)?;
-                staging.seek(SeekFrom::Start(0))?;
+                staging.rewind()?;
 
                 // copy from file to hasher and compressor
                 let mut compressor = zstd::Encoder::new(&mut compressed, 9)?;

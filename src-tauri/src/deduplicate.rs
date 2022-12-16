@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{Seek, SeekFrom, Write};
+use std::io::{Seek, Write};
 use std::path::Path;
 
 use serde::Serialize;
@@ -50,13 +50,22 @@ pub fn deduplicate_inner<R: Runtime>(window: Window<R>, path: &str) -> anyhow::R
         total: files_len,
     }.emit(&window)?;
 
+    let mut last_offset = None;
+
     for (i, file) in files.into_iter().enumerate() {
-        staging.seek(SeekFrom::Start(0))?;
+        // handle deduped ttmps
+        if Some(file.file.mod_offset) == last_offset {
+            continue;
+        }
+
+        last_offset = Some(file.file.mod_offset);
+
+        staging.rewind()?;
         staging.set_len(0)?;
 
         TtmpExtractor::extract_one_into(&file, &mut data, &mut staging)?;
         let size = staging.metadata()?.len() as usize;
-        staging.seek(SeekFrom::Start(0))?;
+        staging.rewind()?;
 
         let info = FileInfo {
             group: file.group.map(ToOwned::to_owned),
@@ -79,7 +88,7 @@ pub fn deduplicate_inner<R: Runtime>(window: Window<R>, path: &str) -> anyhow::R
     }
 
     let (manifest, mut mpd) = encoder.finalize()?;
-    mpd.seek(SeekFrom::Start(0))?;
+    mpd.rewind()?;
 
     let path = Path::new(&path);
     let extension = path.extension().and_then(|s| s.to_str()).unwrap_or("ttmp2");
