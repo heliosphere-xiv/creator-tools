@@ -19,13 +19,13 @@
         "svelte-local-storage-store": "^0.3.1"
     },
     "devDependencies": {
-        "@sveltejs/adapter-static": "^1.0.0-next.49",
-        "@sveltejs/kit": "^1.0.0-next.571",
+        "@sveltejs/adapter-static": "^1",
+        "@sveltejs/kit": "^1",
         "@tauri-apps/cli": "^1.1.0",
         "@types/lodash-es": "^4.17.6",
         "graphql": "^16",
-        "houdini": "^0.17.14",
-        "houdini-svelte": "^0.17.14",
+        "houdini": "^0.18",
+        "houdini-svelte": "^0.18",
         "prettier": "^2.8.0",
         "prettier-plugin-svelte": "^2.8.1",
         "sass": "^1.56.2",
