@@ -287,13 +287,6 @@
     & > header {
       height: 18rem;
       padding: 0;
-
-      & > img {
-        border-top-left-radius: var(--border-radius);
-        border-top-right-radius: var(--border-radius);
-
-        object-fit: cover;
-      }
     }
 
     .changelog {

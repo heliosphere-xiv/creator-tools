@@ -53,6 +53,9 @@
 
         try {
             await inner();
+        } catch (e) {
+            console.log(e);
+            throw e;
         } finally {
             processing = false;
         }
@@ -133,13 +136,15 @@
             <code>{file_name}</code><br />
         {/if}
 
-        That's {formatter.format(totalStorage === 0 ? 0 : size.total / totalStorage * 100)}% of your
-        storage.
+        {#if me}
+            That's {formatter.format(totalStorage === 0 ? 0 : size.total / totalStorage * 100)}% of your
+            storage.
 
-        {#if size.total > availableStorage}
-            That is more space than you have available.
-        {:else}
-            You would have {formatBytes(totalStorage === 0 ? 0 : totalStorage - size.total)} left.
+            {#if size.total > availableStorage}
+                That is more space than you have available.
+            {:else}
+                You would have {formatBytes(totalStorage === 0 ? 0 : totalStorage - size.total)} left.
+            {/if}
         {/if}
     </p>
 

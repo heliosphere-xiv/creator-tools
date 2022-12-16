@@ -47,20 +47,6 @@
 <slot />
 
 <style lang='scss'>
-  .top-banner {
-    padding: 0.5rem 1rem;
-    color: var(--primary-inverse);
-    background-color: var(--primary);
-    border-bottom-left-radius: var(--border-radius);
-    border-bottom-right-radius: var(--border-radius);
-    margin-bottom: 0.5rem;
-
-    a {
-      --primary: var(--primary-inverse);
-      text-decoration: underline;
-    }
-  }
-
   nav a.index {
     display: inline-flex;
     justify-content: center;

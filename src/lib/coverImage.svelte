@@ -37,15 +37,6 @@
     pointer-events: none;
     background-size: cover;
     background-position: center;
-
-    .nsfw & {
-      filter: blur(50px);
-      transition: $nsfw-transition;
-    }
-
-    .nsfw:hover & {
-      filter: blur(10px);
-    }
   }
 
   img {
@@ -71,38 +62,6 @@
     &:hover, &:focus, &:active {
       background-color: inherit;
       text-decoration: none;
-    }
-  }
-
-  .tags {
-    display: flex;
-    flex-direction: column;
-
-    position: absolute;
-    right: 0.5rem;
-    bottom: 0.5rem;
-
-    transition: opacity $transition-time-type;
-
-    &, & > * {
-      user-select: none;
-      pointer-events: none;
-    }
-
-    :hover > & {
-      opacity: 0;
-    }
-
-    & > * {
-      font-size: 0.85rem;
-      padding: 0.25rem;
-      border-radius: var(--border-radius);
-      color: var(--h1-color);
-      text-align: center;
-
-      &:not(:last-child) {
-        margin-bottom: .25rem;
-      }
     }
   }
 
