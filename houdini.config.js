@@ -1,12 +1,15 @@
 /// <references types="houdini-svelte">
+/// <references types="houdini-plugin-svelte-global-stores">
 
 /** @type {import('houdini').ConfigFile} */
 const config = {
-    apiUrl: "http://127.0.0.1:42011/api/graphql",
+    apiUrl: 'http://127.0.0.1:42011/api/graphql',
     plugins: {
-        "houdini-svelte": {
-            "client": "./src/lib/client"
-        }
+        'houdini-svelte': {
+            client: './src/lib/client',
+            static: true,
+        },
+        'houdini-plugin-svelte-global-stores': {},
     },
     scalars: {
         UUID: {
@@ -23,8 +26,8 @@ const config = {
         },
         FileList: {
             type: 'Record<string, [string | null, string | null, string][]>',
-        }
+        },
     },
-}
+};
 
-export default config
+export default config;

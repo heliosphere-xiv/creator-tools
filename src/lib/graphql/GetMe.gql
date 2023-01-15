@@ -4,11 +4,7 @@ query GetMe {
         username
 
         # for storage calculations
-        storageTier {
-            totalSize
-        }
         usedStorage
-        additionalStorage
         hashes
     }
 }

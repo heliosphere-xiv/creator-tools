@@ -10,20 +10,28 @@ The input/output is a string in RFC3339 format.
 """
 scalar DateTime
 
+type FeaturedPackages {
+  packages: [Package!]!
+  pageInfo: SimplePageInfo!
+}
+
 scalar FileList
 
 type FullUser {
-  additionalStorage: Int!
   email: String!
   emailVerified: Boolean!
   hashes: [String!]!
   id: UUID!
-  storageTier: StorageTier!
+  profile: Profile!
+  subscriber: Boolean!
   tasks: [Task!]!
   tokenId: Int!
   tokens: [Token!]!
   usedStorage: Int!
+  usedVanityUrls: Int!
   username: String!
+  vanityUrl: String
+  vanityUrls: Int!
 }
 
 type Group {
@@ -79,6 +87,7 @@ type Mutation {
   register(email: String!, password: String!, username: String!): RegisterResponse!
   reorderImages(ordering: JSONObject!): Int!
   updatePackage(id: UUID!, update: UpdatePackageInput!): Int!
+  updateProfile(update: UpdateProfileInput!): Int!
   updateUser(update: UpdateUserInput!): Int!
   updateVariant(id: Int!, input: UpdateVariantInput!): Int!
   updateVersion(id: Int!, input: UpdateVersionInput!): Int!
@@ -96,6 +105,7 @@ type OptionItem {
   imagePath: String
   manipulations: [JSON!]!
   name: String!
+  priority: Int!
 }
 
 type OptionManipulations {
@@ -127,6 +137,7 @@ type Package {
   usageExempt: Boolean!
   user: User!
   userId: UUID!
+  vanityUrl: String
   variants: [Variant!]!
 }
 
@@ -173,15 +184,24 @@ type PageInfo {
   startCursor: String
 }
 
+type Profile {
+  accent: String
+  avatarId: String
+  description: String
+  links: JSON!
+  shape: String!
+}
+
 type QueryRoot {
+  checkVanityUrl(kind: VanityUrlKind!, slug: String!): UUID
+  featuredPackages(count: Int!, page: Int!, restricted: RestrictedInfoInput): FeaturedPackages!
   getVersion(id: Int!): Version
   me: FullUser
   package(id: UUID!): Package
-  packages(after: String, before: String, first: Int, last: Int, nsfl: Boolean! = false, nsfw: Boolean! = false): PackageConnection!
+  packages(after: String, before: String, first: Int, last: Int, restricted: RestrictedInfoInput): PackageConnection!
   searchAffects(query: String!): [String!]!
   searchTags(query: String!): [TagSearchResult!]!
   searchVersions(info: SearchRequest!, page: Int): SearchResult!
-  storageTiers: [StorageTier!]!
   task(id: UUID!): Task
   user(id: UUID!): User
   variant(id: Int!): Variant
@@ -194,6 +214,11 @@ type RegisterResponse {
 }
 
 type RestrictedInfo {
+  nsfl: Boolean!
+  nsfw: Boolean!
+}
+
+input RestrictedInfoInput {
   nsfl: Boolean!
   nsfw: Boolean!
 }
@@ -222,10 +247,9 @@ enum SelectionType {
   SINGLE
 }
 
-type StorageTier {
-  id: Int!
-  name: String!
-  totalSize: Int!
+type SimplePageInfo {
+  next: Boolean!
+  prev: Boolean!
 }
 
 type Tag {
@@ -285,6 +309,15 @@ input UpdatePackageInput {
   permissions: JSON!
   removeTags: [String!]! = []
   tagline: String
+  vanityUrl: JSON!
+}
+
+input UpdateProfileInput {
+  accent: JSON!
+  description: JSON!
+  links: JSON
+  shape: String
+  vanityUrl: JSON!
 }
 
 input UpdateUserInput {
@@ -307,7 +340,15 @@ input UpdateVersionInput {
 type User {
   id: UUID!
   packages(after: String, before: String, first: Int, last: Int): PackageConnection!
+  profile: Profile!
+  subscriber: Boolean!
   username: String!
+  vanityUrl: String
+}
+
+enum VanityUrlKind {
+  MOD
+  USER
 }
 
 type Variant {

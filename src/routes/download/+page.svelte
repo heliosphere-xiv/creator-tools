@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { type GetMod$result, GQL_GetFiles, GQL_GetMod } from '$houdini';
+    import { type GetMod$result, GQL_CheckVanityUrl, GQL_GetFiles, GQL_GetMod } from '$houdini';
     import { base32ToUuid, formatBytes, uuidToBase32 } from '$lib/util';
     import { save } from '@tauri-apps/api/dialog';
     import { listen } from '@tauri-apps/api/event';
@@ -73,7 +73,22 @@
             return null;
         }
 
-        const id = base32ToUuid(parts[2]);
+        let id;
+        if (parts[2].length !== 26) {
+            const resp = await GQL_CheckVanityUrl.fetch({
+                variables: {
+                    slug: parts[2],
+                },
+            });
+
+            id = resp.data?.checkVanityUrl;
+        } else {
+            id = base32ToUuid(parts[2]);
+        }
+
+        if (id === null || id === undefined) {
+            return null;
+        }
 
         const resp = await GQL_GetMod.fetch({
             variables: {
@@ -226,7 +241,7 @@
                     <label>
                         Version
                         <select bind:value={versionIdx}>
-                            {#each [...variant.versions].reverse() as version, idx (version.id)}
+                            {#each variant.versions as version, idx (version.id)}
                                 <option value={variant.versions.length - idx - 1}>{version.version}</option>
                             {/each}
                         </select>
