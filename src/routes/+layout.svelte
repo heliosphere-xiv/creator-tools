@@ -35,7 +35,6 @@
                     Tools
                 </summary>
                 <ul role='listbox'>
-                    <li><a href='/usage'>Storage usage calculation</a></li>
                     <li><a href='/repack'>Local TTMP deduplication</a></li>
                     <li><a href='/download'>Remote TTMP download</a></li>
                 </ul>
