@@ -51,10 +51,21 @@ pub fn deduplicate_inner<R: Runtime>(window: Window<R>, path: &str) -> anyhow::R
     }.emit(&window)?;
 
     let mut last_offset = None;
+    let mut last_hash: Option<Vec<u8>> = None;
 
     for (i, file) in files.into_iter().enumerate() {
+        let info = FileInfo {
+            group: file.group.map(ToOwned::to_owned),
+            option: file.option.map(ToOwned::to_owned),
+            game_path: file.file.full_path.clone(),
+        };
+
         // handle deduped ttmps
         if Some(file.file.mod_offset) == last_offset {
+            if let Some(hash) = &last_hash {
+                encoder.add_file_info(hash, info);
+            }
+
             continue;
         }
 
@@ -67,19 +78,13 @@ pub fn deduplicate_inner<R: Runtime>(window: Window<R>, path: &str) -> anyhow::R
         let size = staging.metadata()?.len() as usize;
         staging.rewind()?;
 
-        let info = FileInfo {
-            group: file.group.map(ToOwned::to_owned),
-            option: file.option.map(ToOwned::to_owned),
-            game_path: file.file.full_path.clone(),
-        };
-
-        if info.game_path.ends_with(".mdl") {
-            encoder.add_model_file(info, size, &mut staging)?;
+        last_hash = if info.game_path.ends_with(".mdl") {
+            encoder.add_model_file(info, size, &mut staging)?
         } else if info.game_path.ends_with(".tex") || info.game_path.ends_with(".atex") {
-            encoder.add_texture_file(info, size, &mut staging)?;
+            encoder.add_texture_file(info, size, &mut staging)?
         } else {
-            encoder.add_standard_file(info, size, &mut staging)?;
-        }
+            encoder.add_standard_file(info, size, &mut staging)?
+        }.into();
 
         DeduplicateProgress::ProcessingFiles {
             current: i + 1,
