@@ -19,7 +19,7 @@ export default new HoudiniClient({
         return {
             headers: {
                 'Content-Type': 'application/json',
-                'User-Agent': 'hs-creator-tools/1.1.4',
+                'User-Agent': 'hs-creator-tools/1.2.0',
                 ...authHeader(),
             },
         };
