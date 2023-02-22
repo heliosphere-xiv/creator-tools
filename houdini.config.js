@@ -9,7 +9,9 @@ const config = {
             client: './src/lib/client',
             static: true,
         },
-        'houdini-plugin-svelte-global-stores': {},
+        'houdini-plugin-svelte-global-stores': {
+            generate: 'all',
+        },
     },
     scalars: {
         UUID: {

@@ -151,7 +151,7 @@ pub async fn create_ttmp_inner<R: Runtime>(window: Window<R>, path: &str, info: 
     }.emit(&window)?;
 
     let mpd = tempfile::tempfile().context("could not create temp file")?;
-    let mut encoder = Some(MpdEncoder::new(mpd, ManifestKind::V2(mod_pack)));
+    let mut encoder = Some(MpdEncoder::new(mpd, ManifestKind::V2(mod_pack), None));
     let mut staging = Some(TokioFile::from_std(tempfile::tempfile().context("could not create temp file")?));
     for (i, (hash, uses)) in needed_files.files.into_iter().enumerate() {
         // truncate temp file
