@@ -3,27 +3,25 @@ all(not(debug_assertions), target_os = "windows"),
 windows_subsystem = "windows"
 )]
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use tauri::{Manager, Runtime, State as TauriState, Window, WindowEvent};
+use tauri::{Manager, Runtime, Window, WindowEvent};
 use url::Url;
 
-use crate::calculate_usage::CalculatedUsage;
 use crate::state::State;
 
 mod state;
 mod multi_writer;
 
 mod create_ttmp;
-mod calculate_usage;
 mod deduplicate;
 
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_window_state::Builder::default().build())
-        .invoke_handler(tauri::generate_handler![create_ttmp, calculate_usage, deduplicate])
+        .invoke_handler(tauri::generate_handler![create_ttmp, deduplicate])
         .setup(|app| {
             let resolver = app.path_resolver();
             let state = tauri::async_runtime::block_on(async {
@@ -53,15 +51,9 @@ async fn create_ttmp<R: Runtime>(window: Window<R>, path: &str, info: ModInfo, g
         .map_err(|e| format!("{:#}\n{}", e, e.backtrace()))
 }
 
-#[tauri::command]
-async fn calculate_usage<R: Runtime>(window: Window<R>, state: TauriState<'_, Arc<State>>, path: &str, hashes: HashSet<&str>) -> Result<CalculatedUsage, String> {
-    calculate_usage::calculate_usage_inner(window, state, path, hashes).await
-        .map_err(|e| format!("{:#}\n{}", e, e.backtrace()))
-}
-
 #[tauri::command(async)]
-fn deduplicate<R: Runtime>(window: Window<R>, path: &str) -> Result<(), String> {
-    deduplicate::deduplicate_inner(window, path)
+fn deduplicate<R: Runtime>(window: Window<R>, path: &str, compression: u32, threads: usize) -> Result<(), String> {
+    deduplicate::deduplicate_inner(window, path, compression, threads)
         .map_err(|e| format!("{:#}\n{}", e, e.backtrace()))
 }
 

@@ -30,7 +30,7 @@ impl DeduplicateProgress {
     }
 }
 
-pub fn deduplicate_inner<R: Runtime>(window: Window<R>, path: &str) -> anyhow::Result<()> {
+pub fn deduplicate_inner<R: Runtime>(window: Window<R>, path: &str, compression: u32, threads: usize) -> anyhow::Result<()> {
     DeduplicateProgress::SettingUp.emit(&window)?;
 
     let file = File::open(path)?;
@@ -42,7 +42,17 @@ pub fn deduplicate_inner<R: Runtime>(window: Window<R>, path: &str) -> anyhow::R
     let mut data = zip.by_name("TTMPD.mpd")?;
 
     let mpd = tempfile::tempfile()?;
-    let mut encoder = MpdEncoder::new(mpd, extractor.manifest().clone());
+    let threads = if threads == 0 {
+        None
+    } else {
+        Some(threads)
+    };
+    let mut encoder = MpdEncoder::with_compression_level(
+        mpd,
+        extractor.manifest().clone(),
+        threads,
+        compression,
+    );
     let mut staging = tempfile::tempfile()?;
 
     DeduplicateProgress::ProcessingFiles {

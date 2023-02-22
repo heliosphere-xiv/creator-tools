@@ -21,14 +21,13 @@ num_cpus = "1"
 reqwest = { version = "0.11", default-features = false, features = ["rustls-tls", "brotli"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-sha3 = "0.10"
 tauri = { version = "1", features = ["devtools", "dialog-open", "dialog-save", "http-request"] }
 tauri-plugin-window-state = "0.1"
 tempfile = "3"
 tokio = { version = "1", default-features = false, features = ["rt-multi-thread"] }
 ttmp = { git = "https://git.anna.lgbt/ascclemens/ttmp-rs" }
 url = { version = "2", features = ["serde"] }
-zip = { version = "0.6", default-features = false, features = ["deflate"] }
+zip = { version = "0.6", default-features = false, features = ["deflate-zlib"] }
 zstd = "0.12"
 
 [features]
@@ -41,3 +40,4 @@ custom-protocol = ["tauri/custom-protocol"]
 
 [profile.release]
 strip = true
+lto = true

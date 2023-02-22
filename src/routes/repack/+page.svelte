@@ -16,6 +16,10 @@
     type DeduplicateProgress = DeduplicateProgressEmpty | DeduplicateProgressProcessingFiles;
 
     let processing = false;
+    let options = {
+        compression: 9,
+        threads: 0,
+    };
     let progress: DeduplicateProgress | null = null;
 
     async function choose() {
@@ -42,6 +46,7 @@
         try {
             await invoke('deduplicate', {
                 path,
+                ...options,
             });
         } finally {
             unlisten();
@@ -93,3 +98,20 @@
 {/if}
 
 <button on:click={choose} aria-busy={processing} disabled={processing}>Choose file</button>
+
+<details>
+    <summary>Advanced options</summary>
+
+    <label for='compression'>Compression level</label>
+    <input id='compression' type='number' min='1' max='9' bind:value={options.compression} />
+    <small>
+        TexTools uses 9, but 6 results in a file nearly the same size and makes deduplicating much
+        faster.
+    </small>
+
+    <label for='threads'>Threads</label>
+    <input id='threads' type='number' min='0' bind:value={options.threads} />
+    <small>
+        Use 0 to use the amount of cores on your system.
+    </small>
+</details>
