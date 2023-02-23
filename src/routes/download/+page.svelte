@@ -110,7 +110,7 @@
             variantIdx = info === null ? -1 : 0;
             variants = info?.variants || [];
 
-            versionIdx = info === null ? -1 : info.variants[variantIdx].versions.length - 1;
+            versionIdx = info === null ? -1 : 0;
 
             progress = null;
 
@@ -242,7 +242,7 @@
                         Version
                         <select bind:value={versionIdx}>
                             {#each variant.versions as version, idx (version.id)}
-                                <option value={variant.versions.length - idx - 1}>{version.version}</option>
+                                <option value={idx}>{version.version}</option>
                             {/each}
                         </select>
                     </label>
