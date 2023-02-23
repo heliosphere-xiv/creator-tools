@@ -13,7 +13,7 @@ async function fetchQuery(args: RequestHandlerArgs) {
 
     const headers: Record<string, string> = {
         'Content-Type': 'application/json',
-        'User-Agent': 'hs-creator-tools/1.2.1',
+        'User-Agent': 'hs-creator-tools/1.2.2',
     };
 
     const auth = get(authToken);
