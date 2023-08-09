@@ -25,8 +25,8 @@
     overflow: hidden;
     height: 100%;
     width: 100%;
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
+    border-top-left-radius: var(--pico-border-radius);
+    border-top-right-radius: var(--pico-border-radius);
   }
 
   div.inner {
@@ -42,13 +42,14 @@
   img {
     max-height: 100%;
     object-fit: contain;
-    border-radius: var(--border-radius);
-
-    box-shadow: 0 0 1.5rem 0.25rem black;
+    flex-grow: 1;
+    filter: drop-shadow(0 0 0.5rem black);
+    transition: filter 100ms linear;
   }
 
   .image {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     color: currentColor;

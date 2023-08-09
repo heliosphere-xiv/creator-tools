@@ -1,6 +1,6 @@
 [package]
 name = "heliosphere-creator-tools"
-version = "1.2.3"
+version = "2.0.0"
 authors = ["Anna Clemens <git@annaclemens.io>"]
 license = ""
 repository = ""
@@ -14,7 +14,10 @@ tauri-build = { version = "1.2", features = [] }
 
 [dependencies]
 anyhow = { version = "1", features = ["backtrace"] }
+blake3 = { version = "1", features = ["traits-preview"] }
+data-encoding = "2"
 hex = "0.4"
+itertools = "0.11"
 lazy_static = "1"
 maplit = "1"
 num_cpus = "1"
@@ -27,6 +30,7 @@ tempfile = "3"
 tokio = { version = "1", default-features = false, features = ["rt-multi-thread"] }
 ttmp = { git = "https://git.anna.lgbt/ascclemens/ttmp-rs", features = ["logic"] }
 url = { version = "2", features = ["serde"] }
+uuid = { version = "1", features = ["serde"] }
 zip = { version = "0.6", default-features = false, features = ["deflate-zlib"] }
 zstd = "0.12"
 

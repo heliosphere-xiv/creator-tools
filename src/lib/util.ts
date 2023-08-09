@@ -50,15 +50,23 @@ export function formatBytes(bytes: number, decimals = 2) {
     return `${formatted} ${sizes[i]}`;
 }
 
-export async function chooseTtmp(): Promise<string | null> {
+export async function chooseMod(): Promise<string | null> {
     return await open({
         multiple: false,
-        title: 'Choose TTMP',
+        title: 'Choose Mod',
         filters: [
+            // {
+            //     name: 'Compatible mod packs',
+            //     extensions: ['pmp', 'ttmp2', 'ttmp'],
+            // },
             {
-                name: 'TexTools Mod Packs',
-                extensions: ['ttmp2', 'ttmp'],
+                name: 'Penumbra mod packs',
+                extensions: ['pmp'],
             },
+            // {
+            //     name: 'TexTools mod packs',
+            //     extensions: ['ttmp2', 'ttmp'],
+            // },
         ],
     }) as string | null;
 }

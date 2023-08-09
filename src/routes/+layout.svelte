@@ -15,13 +15,12 @@
     </ul>
     <ul>
         <li>
-            <details bind:this={details} role='list' dir='rtl'>
+            <details bind:this={details} class='dropdown'>
                 <summary aria-haspopup='listbox' role='link'>
                     Tools
                 </summary>
-                <ul role='listbox'>
-                    <li><a href='/repack'>Local TTMP deduplication</a></li>
-                    <li><a href='/download'>Remote TTMP download</a></li>
+                <ul role='listbox' dir='rtl'>
+                    <li><a href='/delta'>Delta update creator</a></li>
                 </ul>
             </details>
         </li>
@@ -47,5 +46,9 @@
       background-size: var(--size);
       margin-right: 1ch;
     }
+  }
+
+  details > summary::after {
+    height: 1rem;
   }
 </style>
