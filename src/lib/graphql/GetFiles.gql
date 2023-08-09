@@ -1,4 +1,4 @@
-query GetFiles($id: Int!) {
+query GetFiles($id: UUID!) {
     getVersion(id: $id) {
         neededFiles(download: false, full: true) {
             baseUri

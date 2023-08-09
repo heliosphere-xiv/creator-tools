@@ -29,6 +29,9 @@ const config = {
         FileList: {
             type: 'Record<string, [string | null, string | null, string][]>',
         },
+        BatchList: {
+            type: 'Record<string, Record<string, { offset: number; size_compressed: number; size_uncompressed: number; }>>',
+        },
     },
 };
 

@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "Heliosphere Creator Tools",
-    "version": "1.2.3"
+    "version": "2.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -20,7 +20,8 @@
       "http": {
         "request": true,
         "scope": [
-          "https://heliosphere.app/api/api/graphql"
+          "https://heliosphere.app/api/api/graphql",
+          "http://localhost:42011/api/graphql"
         ]
       }
     },

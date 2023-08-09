@@ -9,6 +9,7 @@ use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use tauri::{Manager, Runtime, Window, WindowEvent};
 use url::Url;
+use crate::delta::DeltaInfo;
 
 use crate::state::State;
 
@@ -17,11 +18,12 @@ mod multi_writer;
 
 mod create_ttmp;
 mod deduplicate;
+mod delta;
 
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_window_state::Builder::default().build())
-        .invoke_handler(tauri::generate_handler![create_ttmp, deduplicate])
+        .invoke_handler(tauri::generate_handler![create_ttmp, deduplicate, delta])
         .setup(|app| {
             let resolver = app.path_resolver();
             let state = tauri::async_runtime::block_on(async {
@@ -43,6 +45,12 @@ fn main() {
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command(async)]
+fn delta<R: Runtime>(window: Window<R>, path: &str, info: DeltaInfo) -> Result<(), String> {
+    delta::delta_inner(window, path, info)
+        .map_err(|e| format!("{e:#}\n{}", e.backtrace()))
 }
 
 #[tauri::command]
