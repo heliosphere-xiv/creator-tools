@@ -154,6 +154,9 @@
                     needed_files: neededFiles,
                 },
             });
+        } catch (e) {
+            console.log(e);
+            throw e;
         } finally {
             unlisten();
         }

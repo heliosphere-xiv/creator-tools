@@ -1,7 +1,9 @@
 use std::collections::{HashMap, HashSet};
 use std::fs::File;
+use std::io::{BufRead, BufReader, Read};
 use std::path::{Path, PathBuf};
 
+use anyhow::Context;
 use blake3::Hasher as Blake3;
 use blake3::traits::digest::Digest;
 use itertools::Itertools;
@@ -154,10 +156,21 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
         .sorted_unstable()
         .collect();
     let mut groups = Vec::with_capacity(group_paths.len());
-    let mut default: PenumbraStandardOptionSimple = serde_json::from_reader(zip.by_name("default_mod.json")?)?;
+    let mut default: PenumbraStandardOptionSimple = {
+        let file = zip.by_name("default_mod.json")
+            .context("could not get default_mod.json")?;
+        let without_bom = skip_bom(file)
+            .context("could not skip bom")?;
+        serde_json::from_reader(without_bom)
+            .context("invalid pmp: invalid default_mod.json")?
+    };
     for path in group_paths {
-        let file = zip.by_name(path)?;
-        let group: PenumbraGroup = serde_json::from_reader(file)?;
+        let file = zip.by_name(path)
+            .with_context(|| format!("could not get {path}"))?;
+        let without_bom = skip_bom(file)
+            .context("could not skip bom")?;
+        let group: PenumbraGroup = serde_json::from_reader(without_bom)
+            .with_context(|| format!("invalid pmp: invalid group {path}"))?;
         groups.push(group);
     }
 
@@ -303,4 +316,15 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
     DeltaProgress::Done.emit(&window)?;
 
     Ok(())
+}
+
+pub fn skip_bom<R: Read>(reader: R) -> std::io::Result<BufReader<R>> {
+    let mut reader = BufReader::new(reader);
+    let filled = reader.fill_buf()?;
+    if filled.len() >= 3 && matches!(&filled[..3], [0xEF, 0xBB, 0xBF]) {
+        // skip the bom
+        reader.consume(3);
+    }
+
+    Ok(reader)
 }
