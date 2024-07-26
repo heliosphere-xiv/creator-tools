@@ -6,14 +6,25 @@ query GetFiles($id: UUID!) {
         }
 
         groups {
-            name
-            options {
+            standard {
+                groupType
                 name
-                description
-                gamePaths
-                imagePath
+                options {
+                    name
+                    description
+                    gamePaths
+                    imagePath
+                }
             }
-            selectionType
+
+            imc {
+                groupType
+                name
+                options {
+                    name
+                    description
+                }
+            }
         }
     }
 }

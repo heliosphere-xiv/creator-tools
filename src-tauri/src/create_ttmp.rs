@@ -11,7 +11,7 @@ use tokio::io::AsyncSeekExt;
 use ttmp::model::{ManifestKind, ModGroup, ModOption, ModPack, ModPackPage, SimpleMod};
 use ttmp::mpd_encoder::{FileInfo, MpdEncoder};
 use zip::CompressionMethod;
-use zip::write::{FileOptions, ZipWriter};
+use zip::write::{SimpleFileOptions, ZipWriter};
 use zstd::stream::write::Decoder;
 
 use crate::{Group, ModInfo, NeededFiles};
@@ -228,7 +228,7 @@ pub async fn create_ttmp_inner<R: Runtime>(window: Window<R>, path: &str, info: 
 
         let ttmp_file = StdFile::create(path)?;
         let mut zip = ZipWriter::new(ttmp_file);
-        zip.start_file("TTMPL.mpl", FileOptions::default().compression_method(CompressionMethod::Deflated))?;
+        zip.start_file("TTMPL.mpl", SimpleFileOptions::default().compression_method(CompressionMethod::Deflated))?;
         match manifest {
             ManifestKind::V2(packs) => serde_json::to_writer(&mut zip, &packs)?,
             ManifestKind::V1(mods) => {
@@ -239,7 +239,7 @@ pub async fn create_ttmp_inner<R: Runtime>(window: Window<R>, path: &str, info: 
             }
         }
 
-        zip.start_file("TTMPD.mpd", FileOptions::default().compression_method(CompressionMethod::Stored))?;
+        zip.start_file("TTMPD.mpd", SimpleFileOptions::default().compression_method(CompressionMethod::Stored))?;
         std::io::copy(&mut file, &mut zip)?;
 
         zip.finish()?;

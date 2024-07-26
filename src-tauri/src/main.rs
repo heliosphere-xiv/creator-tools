@@ -15,6 +15,7 @@ use crate::state::State;
 
 mod state;
 mod multi_writer;
+mod converters;
 
 mod create_ttmp;
 mod deduplicate;

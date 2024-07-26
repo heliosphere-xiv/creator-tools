@@ -8,7 +8,7 @@ use ttmp::model::ManifestKind;
 use ttmp::mpd_encoder::{FileInfo, MpdEncoder};
 use ttmp::ttmp_extractor::TtmpExtractor;
 use zip::{CompressionMethod, ZipWriter};
-use zip::write::FileOptions;
+use zip::write::SimpleFileOptions;
 
 #[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase", tag = "kind")]
@@ -114,7 +114,7 @@ pub fn deduplicate_inner<R: Runtime>(window: Window<R>, path: &str, compression:
     let new_file = File::create(new_path)?;
     let mut zip = ZipWriter::new(new_file);
 
-    zip.start_file("TTMPL.mpl", FileOptions::default().compression_method(CompressionMethod::Deflated))?;
+    zip.start_file("TTMPL.mpl", SimpleFileOptions::default().compression_method(CompressionMethod::Deflated))?;
     match manifest {
         ManifestKind::V1(mods) => for mod_ in mods {
             serde_json::to_writer(&mut zip, &mod_)?;
@@ -123,7 +123,7 @@ pub fn deduplicate_inner<R: Runtime>(window: Window<R>, path: &str, compression:
         ManifestKind::V2(pack) => serde_json::to_writer(&mut zip, &pack)?,
     }
 
-    zip.start_file("TTMPD.mpd", FileOptions::default().compression_method(CompressionMethod::Stored))?;
+    zip.start_file("TTMPD.mpd", SimpleFileOptions::default().compression_method(CompressionMethod::Stored))?;
     std::io::copy(&mut mpd, &mut zip)?;
 
     zip.finish()?;

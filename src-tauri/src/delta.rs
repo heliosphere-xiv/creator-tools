@@ -10,7 +10,7 @@ use serde_json::Value;
 use tauri::{Manager, Runtime, Window};
 use uuid::Uuid;
 use zip::{ZipArchive, ZipWriter};
-use zip::write::FileOptions;
+use zip::write::SimpleFileOptions;
 
 use crate::NeededFiles;
 
@@ -52,34 +52,79 @@ struct DeltaManifest {
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct PenumbraGroup {
+    #[serde(default)]
+    pub version: Option<i32>,
     pub name: String,
     pub description: Option<String>,
     #[serde(default)]
     pub priority: i32,
     #[serde(default)]
     pub default_settings: u32,
-    #[serde(rename = "Type")]
-    pub kind: SelectionKind,
-    pub options: Vec<PenumbraOption>,
+    #[serde(rename = "Type", flatten)]
+    pub kind: GroupKind,
 }
 
 #[derive(Deserialize, Serialize)]
-pub enum SelectionKind {
-    Single,
-    Multi,
+#[serde(tag = "Type")]
+pub enum GroupKind {
+    Single {
+        #[serde(rename = "Options", default)]
+        options: Vec<PenumbraStandardOption>,
+    },
+    Multi {
+        #[serde(rename = "Options", default)]
+        options: Vec<PenumbraStandardOption>,
+    },
+    Imc {
+        #[serde(rename = "Identifier")]
+        identifier: serde_json::Value,
+
+        #[serde(rename = "AllVariants", default)]
+        all_variants: bool,
+
+        #[serde(rename = "DefaultEntry")]
+        default_entry: serde_json::Value,
+
+        #[serde(rename = "Options", default)]
+        options: Vec<PenumbraImcOption>,
+    },
 }
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct PenumbraOption {
+pub struct PenumbraStandardOptionSimple {
+    #[serde(default)]
+    pub version: Option<i32>,
+    #[serde(default)]
+    pub files: HashMap<String, String>,
+    #[serde(default)]
+    pub file_swaps: HashMap<String, String>,
+    #[serde(default)]
+    pub manipulations: Vec<Value>,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct PenumbraStandardOption {
     pub name: String,
     #[serde(default)]
     pub description: Option<String>,
     #[serde(default)]
     pub priority: i32,
-    pub files: HashMap<String, String>,
-    pub file_swaps: HashMap<String, String>,
-    pub manipulations: Vec<Value>,
+    #[serde(flatten)]
+    pub simple: PenumbraStandardOptionSimple,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct PenumbraImcOption {
+    pub name: String,
+    #[serde(default)]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub is_disable_sub_mod: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attribute_mask: Option<i32>,
 }
 
 pub fn delta_inner<R: Runtime>(window: Window<R>, path: &str, info: DeltaInfo) -> anyhow::Result<()> {
@@ -87,7 +132,7 @@ pub fn delta_inner<R: Runtime>(window: Window<R>, path: &str, info: DeltaInfo) -
 
     let path = Path::new(path);
     match path.extension().and_then(|ext| ext.to_str()) {
-        Some("pmp") => return pmp_delta(window, path, info),
+        Some("pmp") => pmp_delta(window, path, info),
         Some("ttmp" | "ttmp2") => anyhow::bail!("textools not supported"),
         Some(_) | None => anyhow::bail!("could not determine file type from extension"),
     }
@@ -109,7 +154,7 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
         .sorted_unstable()
         .collect();
     let mut groups = Vec::with_capacity(group_paths.len());
-    let mut default: PenumbraOption = serde_json::from_reader(zip.by_name("default_mod.json")?)?;
+    let mut default: PenumbraStandardOptionSimple = serde_json::from_reader(zip.by_name("default_mod.json")?)?;
     for path in group_paths {
         let file = zip.by_name(path)?;
         let group: PenumbraGroup = serde_json::from_reader(file)?;
@@ -123,10 +168,16 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
     }
 
     for group in &groups {
-        for option in &group.options {
-            for file in option.files.values() {
-                to_hash.insert(file.clone());
+        match &group.kind {
+            GroupKind::Single { options }
+            | GroupKind::Multi { options } => {
+                for option in options {
+                    for file in option.simple.files.values() {
+                        to_hash.insert(file.clone());
+                    }
+                }
             }
+            _ => {}
         }
     }
 
@@ -167,14 +218,19 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
     }
 
     for group in &mut groups {
-        for option in &mut group.options {
-            for local_path in option.files.values_mut() {
-                let hash = &path_hashes[&*local_path];
-                *local_path = format!("files/{hash}");
+        match &mut group.kind {
+            GroupKind::Single { options }
+            | GroupKind::Multi { options } => {
+                for option in options {
+                    for local_path in option.simple.files.values_mut() {
+                        let hash = &path_hashes[&*local_path];
+                        *local_path = format!("files/{hash}");
+                    }
+                }
             }
+            _ => {}
         }
     }
-
 
     let mut current = 0;
     let total = new_hashes.len() + 3 + groups.len();
@@ -189,7 +245,7 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
 
     // write the new files into the zip
     for hash in new_hashes {
-        new_file.start_file(format!("files/{hash}"), FileOptions::default())?;
+        new_file.start_file(format!("files/{hash}"), SimpleFileOptions::default())?;
         let path = hash_to_path[hash];
         std::io::copy(&mut zip.by_name(path)?, &mut new_file)?;
 
@@ -201,7 +257,7 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
     }
 
     // add the delta manifest
-    new_file.start_file("heliosphere_delta.json", FileOptions::default())?;
+    new_file.start_file("heliosphere_delta.json", SimpleFileOptions::default())?;
     serde_json::to_writer(&mut new_file, &DeltaManifest {
         updates: info.version_id,
     })?;
@@ -213,7 +269,7 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
     }.emit(&window)?;
 
     // add the jsons
-    new_file.start_file("meta.json", FileOptions::default())?;
+    new_file.start_file("meta.json", SimpleFileOptions::default())?;
     std::io::copy(&mut zip.by_name("meta.json")?, &mut new_file)?;
 
     current += 1;
@@ -222,7 +278,7 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
         total,
     }.emit(&window)?;
 
-    new_file.start_file("default_mod.json", FileOptions::default())?;
+    new_file.start_file("default_mod.json", SimpleFileOptions::default())?;
     serde_json::to_writer(&mut new_file, &default)?;
 
     current += 1;
@@ -232,7 +288,7 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
     }.emit(&window)?;
 
     for (i, group) in groups.iter().enumerate() {
-        new_file.start_file(format!("group_{:<03}_group.json", i + 1), FileOptions::default())?;
+        new_file.start_file(format!("group_{:<03}_group.json", i + 1), SimpleFileOptions::default())?;
         serde_json::to_writer(&mut new_file, group)?;
 
         current += 1;

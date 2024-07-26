@@ -16,11 +16,12 @@
         "base32-decode": "^1",
         "base32-encode": "^2",
         "lodash-es": "^4",
-        "svelte-local-storage-store": "^0.5"
+        "svelte-local-storage-store": "^0.6"
     },
     "devDependencies": {
-        "@sveltejs/adapter-static": "^2",
-        "@sveltejs/kit": "^1",
+        "@sveltejs/adapter-static": "^3",
+        "@sveltejs/kit": "^2",
+        "@sveltejs/vite-plugin-svelte": "^3",
         "@tauri-apps/cli": "^1",
         "@types/lodash-es": "^4",
         "graphql": "^16",
@@ -35,6 +36,6 @@
         "svelte-preprocess": "^5",
         "tslib": "^2",
         "typescript": "^5",
-        "vite": "^4"
+        "vite": "^5"
     }
 }
