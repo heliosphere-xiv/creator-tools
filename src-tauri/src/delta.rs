@@ -177,7 +177,7 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
     // add all the paths referenced
     let mut to_hash = HashSet::new();
     for file in default.files.values() {
-        to_hash.insert(file.clone());
+        to_hash.insert(file.replace('\\', "/"));
     }
 
     for group in &groups {
@@ -186,7 +186,7 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
             | GroupKind::Multi { options } => {
                 for option in options {
                     for file in option.simple.files.values() {
-                        to_hash.insert(file.clone());
+                        to_hash.insert(file.replace('\\', "/"));
                     }
                 }
             }
