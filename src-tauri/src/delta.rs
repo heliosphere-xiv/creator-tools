@@ -174,10 +174,29 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
         groups.push(group);
     }
 
+    // normalise all the paths first
+    for file in default.files.values_mut() {
+        *file = file.replace('\\', "/");
+    }
+
+    for group in &mut groups {
+        match &mut group.kind {
+            GroupKind::Single { options }
+            | GroupKind::Multi { options } => {
+                for option in options {
+                    for file in option.simple.files.values_mut() {
+                        *file = file.replace('\\', "/");
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
     // add all the paths referenced
     let mut to_hash = HashSet::new();
     for file in default.files.values() {
-        to_hash.insert(file.replace('\\', "/"));
+        to_hash.insert(file.clone());
     }
 
     for group in &groups {
@@ -186,7 +205,7 @@ fn pmp_delta<R: Runtime>(window: Window<R>, path: &Path, info: DeltaInfo) -> any
             | GroupKind::Multi { options } => {
                 for option in options {
                     for file in option.simple.files.values() {
-                        to_hash.insert(file.replace('\\', "/"));
+                        to_hash.insert(file.clone());
                     }
                 }
             }
