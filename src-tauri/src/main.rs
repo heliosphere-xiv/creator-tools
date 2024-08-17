@@ -1,6 +1,6 @@
 #![cfg_attr(
-all(not(debug_assertions), target_os = "windows"),
-windows_subsystem = "windows"
+    all(not(debug_assertions), target_os = "windows"),
+    windows_subsystem = "windows"
 )]
 
 use std::collections::HashMap;
@@ -73,13 +73,13 @@ pub struct UsageInfo {
     pub hashes: HashMap<String, (usize, Vec<String>)>,
 }
 
-type GroupOptionPath = (Option<String>, Option<String>, String);
+type GroupOptionGameArchive = (Option<String>, Option<String>, String, Option<String>);
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NeededFiles {
     base_uri: Url,
-    files: HashMap<String, Vec<GroupOptionPath>>,
+    files: HashMap<String, Vec<GroupOptionGameArchive>>,
 }
 
 #[derive(Deserialize, Copy, Clone)]
